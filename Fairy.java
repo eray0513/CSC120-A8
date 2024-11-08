@@ -1,31 +1,45 @@
 import java.util.ArrayList;
 
-import javax.management.RuntimeErrorException;
 public class Fairy implements Contract{
     
-    private String name;
-    private int pixieDustCur;
-    private int pixieDustCap;
-    private Talent talent;
-    private int curX;
-    private int curY;
-    private ArrayList<String> inventory;
+    private String name; // Name of the fairy
+    private int pixieDustCur; // Current pixie dust in use
+    private int pixieDustCap; // Pixie dust capacity
+    private Talent talent; // Enum Talent for the fairy's talent
+    private int curX; // Current x position
+    private int curY; // Current y position
+    private ArrayList<String> inventory; // Array List of strings for the fairy's inventory
+    private int curSize; // Current size of fairy
 
+    /**
+     * Constructs a fairy using name, age, and talent, all else is default for all fairies
+     * @param name of the fairy
+     * @param age of the fairy
+     * @param talent of the fairy
+     */
     public Fairy (String name, int age, Talent talent){
         this.name = name;
-        this.age = age;
         this.talent = talent;
-        this.pixieDustCap = 100;
-        this.pixieDustCur = this.pixieDustCap;
-        this.curX = 0;
+        this.pixieDustCap = 100; // default capacity
+        this.pixieDustCur = this.pixieDustCap; // start with max capacity of dust
+        this.curX = 0; // start at position (0, 0)
         this.curY = 0;
-        this.inventory = new ArrayList<String>();
+        this.curSize = 10; // default fairy size
+        this.inventory = new ArrayList<String>(); // initialize inventory to empty
     }
 
+    /**
+     * Allows a fairy to pick up an object and stores it in the inventory
+     * @param item that the fairy is grabbing
+     */
     public void grab(String item){
         this.inventory.add(item);
     }
 
+    /**
+     * Allows a fairy to drop and object and then removes it from the inventory if it is in the inventory
+     * @param item that the fairy is dropping
+     */
     public String drop(String item){
         if(this.inventory.contains(item)){
             this.inventory.remove(item);
@@ -35,6 +49,9 @@ public class Fairy implements Contract{
         }
     }
 
+    /**
+     * Allows fairies to examine objects depending on their talents, and decide whether or not they want it
+     */
     public void examine(String item){
         if(this.talent == Talent.TINKER){
             System.out.println("Oooo I like this " + item + "I could use this in my workshop!!");
@@ -55,6 +72,7 @@ public class Fairy implements Contract{
         }
     }
 
+    
     public void use(String item){
         if(this.inventory.contains(item)){
             if(item.contains("Pixie Dust")||item.contains("pixie dust")){
@@ -111,7 +129,20 @@ public class Fairy implements Contract{
     }
 
     public Number shrink(){
+        return this.curSize / 2;
+    }
 
+    public Number grow(){
+        return this.curSize*2;
+    }
+
+    public void rest(){
+        int pixieNeeded = this.pixieDustCap - this.pixieDustCur;
+        this.pixieDustCap += pixieNeeded;
+    }
+
+    public void undo(){
+        throw new RuntimeException("There are no undos in life. Not even for fairies. Live with the consequences of your choices");
     }
 
     public boolean canMove(String direction){
