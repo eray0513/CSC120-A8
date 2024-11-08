@@ -1,0 +1,3 @@
+public enum Talent {
+    TINKER, LIGHT, FASTFLYING, GARDEN, WATER, ANIMAL, DUST
+}
