@@ -6,10 +6,10 @@ public class Fairy implements Contract{
     private int pixieDustCur; // Current pixie dust in use
     private int pixieDustCap; // Pixie dust capacity
     private Talent talent; // Enum Talent for the fairy's talent
-    private int curX; // Current x position
-    private int curY; // Current y position
+    private double curX; // Current x position
+    private double curY; // Current y position
     private ArrayList<String> inventory; // Array List of strings for the fairy's inventory
-    private int curSize; // Current size of fairy
+    private double curSize; // Current size of fairy
 
     /**
      * Constructs a fairy using name, age, and talent, all else is default for all fairies
@@ -23,7 +23,7 @@ public class Fairy implements Contract{
         this.pixieDustCur = this.pixieDustCap; // start with max capacity of dust
         this.curX = 0; // start at position (0, 0)
         this.curY = 0;
-        this.curSize = 10; // default fairy size
+        this.curSize = 10.0; // default fairy size
         this.inventory = new ArrayList<String>(); // initialize inventory to empty
         this.inventory.add("Pixie Dust");
     }
@@ -51,6 +51,7 @@ public class Fairy implements Contract{
 
     /**
      * Allows fairies to examine objects depending on their talents, and decide whether or not they want it
+     * @param item that the fairy is examining
      */
     public void examine(String item){
         if(this.talent == Talent.TINKER){
@@ -72,7 +73,10 @@ public class Fairy implements Contract{
         }
     }
 
-
+    /**
+     * Allows a fairy to use an item if it exists in their inventory
+     * @param item that the fairy is using
+     */
     public void use(String item){
         if(this.inventory.contains(item)){
             if(item.contains("Pixie Dust")||item.contains("pixie dust")){
@@ -86,41 +90,60 @@ public class Fairy implements Contract{
         }
     }
 
+    /**
+     * Allows a fairy to walk in a chosen direction as long as they don't go into the negatives and prints their coordinates
+     * @param direction which direction the fairy is walking (North, East, South, West)
+     * @return t/f if the fairy was able to walk in that direction
+     */
     public boolean walk(String direction){
         if(direction.contains("West")){
             if(this.canMove(direction)){
                 this.curX --;
+                System.out.println(this.name + " is currently at position " + this.getCoordinates());
                 return true;
             } else{
+                System.out.println(this.name + " remained at position " + this.getCoordinates());
                 return false;
             }
         } else if (direction.contains("East")){
             this.curX ++;
+            System.out.println(this.name + " is currently at position " + this.getCoordinates());
             return true;
         } else if (direction.contains("South")){
             if(this.canMove(direction)){
                 this.curY --;
+                System.out.println(this.name + " is currently at position " + this.getCoordinates());
                 return true;
             } else{
+                System.out.println(this.name + " remained at position " + this.getCoordinates());
                 return false;
             }
         } else if (direction.contains("North")){
             this.curY ++;
+            System.out.println(this.name + " is currently at position " + this.getCoordinates());
             return true;
         } else{
             throw new RuntimeException("Direction not recognized. Try again.");
         }
     }
 
-    public boolean fly(int x, int y){
-        int pixieNeeded = x+y;
+    /**
+     * Allows a fairy to fly to a chosen, non-negative position 
+     * @param x new x coordinate
+     * @param y new y coordinate
+     * @return t/f if the flight was comopleted
+     */
+    public boolean fly(double x, double y){
+        double pixieNeeded = x+y;
         if(this.isRemaining(pixieNeeded)){
             if(x>=0 && y>=0){
                 this.curX = x;
                 this.curY = y;
                 this.pixieDustCur -= pixieNeeded;
+                System.out.println(this.name + " is currently at position " + this.getCoordinates());
                 return true;
             } else{
+                System.out.println(this.name + " remained at position " + this.getCoordinates());
                 return false;
             }
         } else{
@@ -128,21 +151,45 @@ public class Fairy implements Contract{
         }
     }
 
+    /**
+     * Allows a fairy to shrink in half
+     * @return a Number that indicates the fairy's new size
+     */
     public Number shrink(){
-        return this.curSize / 2;
+        this.curSize = this.curSize/2;
+        return this.curSize;
     }
 
+    /**
+     * Allows a fairy to grow twice as large
+     * @return a Number that indicate's the fairy's new size
+     */
     public Number grow(){
-        return this.curSize*2;
+        this.curSize = this.curSize*2;
+        return this.curSize;
     }
 
+    /**
+     * Allows a fairy to gain energy and pixie dust back to full capacity
+     */
     public void rest(){
         int pixieNeeded = this.pixieDustCap - this.pixieDustCur;
         this.pixieDustCap += pixieNeeded;
     }
 
+    /**
+     * Allows a fairy to attempt to undo their previous action
+     */
     public void undo(){
-        throw new RuntimeException("There are no undos in life. Not even for fairies. Live with the consequences of your choices");
+        throw new RuntimeException("There are no undos in life. Not even for fairies. Live with the consequences of your choices.");
+    }
+
+    /**
+     * Allows the fairy's current coordinates to be accessed
+     * @return a string formatted (x, y)
+     */
+    public String getCoordinates(){
+        return "(" + this.curX + ", " + this.curY + ")";
     }
 
     public boolean canMove(String direction){
@@ -203,5 +250,40 @@ public static void main(String[] args) {
     }
     
     tinkerbell.use("Pixie Dust");
+    
+    System.out.println(tinkerbell.walk("West"));
+    System.out.println(tinkerbell.walk("East"));
+    System.out.println(tinkerbell.walk("West"));
+    System.out.println(tinkerbell.walk("South"));
+    System.out.println(tinkerbell.walk("North"));
+    System.out.println(tinkerbell.walk("South"));
+
+    try{
+        tinkerbell.walk("west");
+    }catch(Exception e){
+        System.out.println(e);
+    }
+
+    tinkerbell.fly(3, 5);
+    tinkerbell.fly(-1, 2);
+    tinkerbell.fly(2, -1);
+    
+    try{
+    tinkerbell.fly(50, 50);
+    }catch(Exception e){
+        System.out.println(e);
+    }
+
+    System.out.println(rosetta.grow());
+    System.out.println(fawn.shrink());
+    System.out.println(fawn.shrink());
+    System.out.println(rosetta.shrink());
+
+    try{
+        silvermist.undo();
+    } catch(Exception e){
+        System.out.println(e);
+    }
+
 }
 }
