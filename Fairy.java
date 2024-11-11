@@ -14,10 +14,9 @@ public class Fairy implements Contract{
     /**
      * Constructs a fairy using name, age, and talent, all else is default for all fairies
      * @param name of the fairy
-     * @param age of the fairy
      * @param talent of the fairy
      */
-    public Fairy (String name, int age, Talent talent){
+    public Fairy (String name, Talent talent){
         this.name = name;
         this.talent = talent;
         this.pixieDustCap = 100; // default capacity
@@ -26,6 +25,7 @@ public class Fairy implements Contract{
         this.curY = 0;
         this.curSize = 10; // default fairy size
         this.inventory = new ArrayList<String>(); // initialize inventory to empty
+        this.inventory.add("Pixie Dust");
     }
 
     /**
@@ -43,7 +43,7 @@ public class Fairy implements Contract{
     public String drop(String item){
         if(this.inventory.contains(item)){
             this.inventory.remove(item);
-            return "I don't need my " + item + "anymore!";
+            return "I don't need my " + item + " anymore!";
         } else{
             throw new RuntimeException("I don't have that item in my possession. Try again later.");
         }
@@ -54,7 +54,7 @@ public class Fairy implements Contract{
      */
     public void examine(String item){
         if(this.talent == Talent.TINKER){
-            System.out.println("Oooo I like this " + item + "I could use this in my workshop!!");
+            System.out.println("Oooo I like this " + item + " I could use this in my workshop!!");
             this.grab(item);
         } else if(this.talent == Talent.LIGHT){
             System.out.println("This " + item + " is looking a little sunless...let me brighten it up!");
@@ -62,17 +62,17 @@ public class Fairy implements Contract{
             System.out.println("I just KNOW the chipmunks would love this " + item + ". I'll take you with me!");
             this.grab(item);
         } else if(this.talent == Talent.WATER){
-            System.out.println("This " + item + " could you a little dew sparkle...Here is comes!");
+            System.out.println("This " + item + " could use a little dew sparkle...Here is comes!");
         } else if(this.talent == Talent.DUST){
             System.out.println("Queen Clarian should see this " + item + ". What if it affects the pixie tree??");
         } else if(this.talent == Talent.FASTFLYING){
-            System.out.println("Does it make me fly faster?? I think not. Not worth my time.");
+            System.out.println("Will this " + item + " make me fly faster?? I think not. Not worth my time.");
         } else if(this.talent == Talent.GARDEN){
             System.out.println("Oh my...oh my...that " + item + " is a bit dirty isn't it? No thank you.");
         }
     }
 
-    
+
     public void use(String item){
         if(this.inventory.contains(item)){
             if(item.contains("Pixie Dust")||item.contains("pixie dust")){
@@ -170,4 +170,38 @@ public class Fairy implements Contract{
         }
         return result;
     }
+public static void main(String[] args) {
+    Fairy tinkerbell = new Fairy("Tinkerbell", Talent.TINKER);
+    Fairy rosetta = new Fairy("Rosetta", Talent.GARDEN);
+    Fairy fawn = new Fairy("Fawn", Talent.ANIMAL);
+    Fairy vidia = new Fairy("Vidia", Talent.FASTFLYING);
+    Fairy clarence = new Fairy("Clarence", Talent.DUST);
+    Fairy silvermist = new Fairy("Silvermist", Talent.WATER);
+    Fairy iridessa = new Fairy("Iridessa", Talent.LIGHT);
+
+    tinkerbell.grab("Hammer");
+    System.out.println(tinkerbell.drop("Hammer"));
+    try{
+        System.out.println(tinkerbell.drop("Hammer"));
+    }catch(Exception e){
+        System.out.println(e);
+    }
+
+    tinkerbell.examine("Hammer");
+    rosetta.examine("Hammer");
+    fawn.examine("Hammer");
+    vidia.examine("Hammer");
+    clarence.examine("Hammer");
+    silvermist.examine("Hammer");
+    iridessa.examine("Hammer");
+    
+    tinkerbell.use("Hammer");
+    try{
+        tinkerbell.use("Shovel");
+    }catch(Exception e){
+        System.out.println(e);
+    }
+    
+    tinkerbell.use("Pixie Dust");
+}
 }
