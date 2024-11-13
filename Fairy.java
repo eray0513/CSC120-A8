@@ -228,6 +228,7 @@ public class Fairy implements Contract {
     }
     return result;
   }
+  
   public static void main(String[] args) {
     // Creates fairy objects with every talent option
     Fairy tinkerbell = new Fairy("Tinkerbell", Talent.TINKER);
